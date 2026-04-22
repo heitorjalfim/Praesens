@@ -8,7 +8,6 @@
 		<version>4.0.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.meets.cesar</groupId>
 	<artifactId>praesens</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>praesens</name>

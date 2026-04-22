@@ -1,38 +1,52 @@
 package br.com.meets.cesar.praesens.service;
 
-import br.com.meets.cesar.praesens.model.Paciente;
+import br.com.meets.cesar.praesens.model.AgendamentoModel;
+import br.com.meets.cesar.praesens.model.PacienteModel;
+import br.com.meets.cesar.praesens.repository.AgendamentoRepository;
 import br.com.meets.cesar.praesens.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class AgendamentoService {
 
     @Autowired
-    private PacienteRepository repository;
+    private AgendamentoRepository agendamentoRepository;
 
-    public String realizarAgendamento(String cpf, String nome) {
-        // O JPA gerencia a busca e atualização de forma segura
-        Paciente paciente = repository.findByCpf(cpf)
-                .orElse(new Paciente(null, cpf, nome, 0, 0));
+    @Autowired
+    private PacienteRepository pacienteRepository;
 
-        paciente.setTotalAgendamentos(paciente.getTotalAgendamentos() + 1);
-        repository.save(paciente); // Salva ou Atualiza automaticamente
+    public AgendamentoModel salvar(AgendamentoModel agendamento) {
+        // No seu Model o paciente é um objeto. Vamos garantir que ele existe no banco.
+        PacienteModel paciente = agendamento.getPaciente();
+        
+        // Se o paciente for novo (ID nulo), salvamos primeiro. 
+        // Se já existir, o JPA trata de associar.
+        if (paciente.getID_Paciente() == null) {
+            paciente = pacienteRepository.save(paciente);
+        }
 
-        return "Agendado! Risco: " + String.format("%.2f", paciente.getScoreRisco()) + "%";
+        agendamento.setPaciente(paciente);
+        return agendamentoRepository.save(agendamento);
     }
 
-    public String registrarFalta(String cpf) {
-        return repository.findByCpf(cpf).map(paciente -> {
-            paciente.setTotalFaltas(paciente.getTotalFaltas() + 1);
-            repository.save(paciente);
-            return "Falta registrada para " + paciente.getNome() + ". Novo risco: " 
-                    + String.format("%.2f", paciente.getScoreRisco()) + "%";
-        }).orElse("Paciente não encontrado.");
+    public void registrarFalta(Long idAgendamento) {
+        agendamentoRepository.findById(idAgendamento).ifPresent(agendamento -> {
+            PacienteModel paciente = agendamento.getPaciente();
+            
+            int faltasAtuais = paciente.getHistorico_NoShow();
+            paciente.setHistorico_NoShow(faltasAtuais + 1);
+            
+            int honraAtual = paciente.getScore_Honra();
+            if (honraAtual > 0) paciente.setScore_Honra(honraAtual - 10);
+
+            pacienteRepository.save(paciente);
+        });
     }
 
-    public List<Paciente> obterListaPorRisco() {
-        return repository.findAll(); // O banco retorna a lista atualizada
+    public List<AgendamentoModel> listarTodos() {
+        return agendamentoRepository.findAll();
     }
 }
