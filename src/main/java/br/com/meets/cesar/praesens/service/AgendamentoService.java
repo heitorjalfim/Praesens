@@ -19,11 +19,9 @@ public class AgendamentoService {
     private PacienteRepository pacienteRepository;
 
     public AgendamentoModel salvar(AgendamentoModel agendamento) {
-        // No seu Model o paciente é um objeto. Vamos garantir que ele existe no banco.
+     
         PacienteModel paciente = agendamento.getPaciente();
-        
-        // Se o paciente for novo (ID nulo), salvamos primeiro. 
-        // Se já existir, o JPA trata de associar.
+
         if (paciente.getID_Paciente() == null) {
             paciente = pacienteRepository.save(paciente);
         }
