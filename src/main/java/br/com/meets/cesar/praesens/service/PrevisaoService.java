@@ -9,12 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class PrevisaoService {
 
-    private final ClimaService climaService;
+    private final WeatherService weatherService;
     private final TransitoService transitoService;
     private final IAService iaService;
 
+
     public PrevisaoResponseDTO calcularPrevisao(PrevisaoRequestDTO dadosClinica) {
-        float clima = climaService.FatorClima();
+        float clima = weatherService.obterFatorClima("Recife");
         float transito = transitoService.FatorTransito();
 
         double probabilidade = iaService.preverRisco(dadosClinica, clima, transito);

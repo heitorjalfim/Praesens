@@ -6,13 +6,11 @@ import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtSession;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
-
 import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
 public class IAService {
-
     private final OrtEnvironment env;
     private final OrtSession session;
 
@@ -22,17 +20,20 @@ public class IAService {
             
             try (OnnxTensor tensor = OnnxTensor.createTensor(env, features);
                  OrtSession.Result resultado = session.run(Collections.singletonMap("input", tensor))) {
+
+                float[][] outputProbabilidades = (float[][]) resultado.get(1).getValue();
                 
-                float[][] output = (float[][]) resultado.get(0).getValue();
-                return output[0][0];
+                float probabilidadeFalta = outputProbabilidades[0][1];
+                
+                return (double) probabilidadeFalta;
             }
         } catch (Exception e) {
-            System.err.println("IA: Erro durante a execução da inferência do ONNX.");
+            System.err.println("IA: Erro durante a execução da inferência do ONNX: " + e.getMessage());
             e.printStackTrace();
             return -1.0;
         }
     }
-
+    
     private float[][] prepararDados(PrevisaoRequestDTO dto, float fatorClima, float fatorTransito) {
         float tipoNum = (dto.tipoProcedimento() != null && 
                          dto.tipoProcedimento().equalsIgnoreCase("Estético")) ? 1.0f : 0.0f;

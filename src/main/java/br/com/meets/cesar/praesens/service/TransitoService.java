@@ -9,6 +9,6 @@ import lombok.Data;
 public class TransitoService {
 
     public float FatorTransito(){
-        return 0.4f; 
+        return 0.2f; 
     }
 }
