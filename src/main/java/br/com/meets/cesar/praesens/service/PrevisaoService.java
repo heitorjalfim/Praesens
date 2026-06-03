@@ -15,8 +15,11 @@ public class PrevisaoService {
 
 
     public PrevisaoResponseDTO calcularPrevisao(PrevisaoRequestDTO dadosClinica) {
+        double lat = -8.0539;
+        double lon = - 34.8811;
+
         float clima = weatherService.obterFatorClima("Recife");
-        float transito = transitoService.FatorTransito();
+        float transito = transitoService.obterFatorTransito(lat, lon);
 
         double probabilidade = iaService.preverRisco(dadosClinica, clima, transito);
 
