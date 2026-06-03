@@ -47,7 +47,7 @@ https://praesens.onrender.com/swagger-ui/index.html#/
 
 ### 📊 6. EXEMPLO DE REQUISICAO (INPUT)
 {
-  "tipoProcedimento": "CONSULTA_GERAL",
+  "tipoProcedimento": "Estetico",
   "horaAgendamento": 14,
   "valorProcedimento": 250,
   "totalAgendamentos": 12,
