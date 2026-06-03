@@ -1,77 +1,60 @@
+# 🏥 PRAESENS API: Inteligência Preditiva em Saúde
 
-# 🏥 Praesens API
-
-> API inteligente de predição de faltas em consultas médicas, utilizando dados clínicos, histórico do paciente e variáveis externas como clima e trânsito.
-
----
-
-## 📋 Sobre o Projeto
-
-A **Praesens API** é uma solução backend desenvolvida para calcular a probabilidade de um paciente faltar a uma consulta médica. O sistema combina dados históricos do paciente com informações em tempo real de APIs externas para gerar uma predição precisa via modelo de machine learning.
-
-A ideia central é auxiliar clínicas e consultórios a otimizarem sua agenda, reduzindo o impacto de no-shows e melhorando a gestão de horários.
+> **Otimizando agendamentos e reduzindo o impacto financeiro do no-show através de ciência de dados e engenharia de software.**
 
 ---
 
-## ⚙️ Como Funciona
-
-A API recebe os dados de um paciente e uma consulta agendada, processa as seguintes variáveis e retorna a chance estimada de falta:
-
-- 🏥 **Tipo e valor do agendamento** - influência no risco de prejuízo para a empresa
-- 📅 **Histórico de agendamentos** — frequência e padrão de consultas anteriores
-- ❌ **Histórico de faltas** — quantidade e recorrência de ausências passadas
-- 🌦️ **Condições climáticas** — integração com API de clima para o dia da consulta
-- 🚗 **Condições de trânsito** — integração com API de trânsito para a rota do paciente
-
-Todas as variáveis são processadas pelo motor de IA baseado em **XGBoost**, que retorna um score de probabilidade de falta entre 0 e 1.
+### 📑 1. O DESAFIO
+O no-show (pacientes que faltam sem aviso) e um dos maiores gargalos financeiros em clinicas. O problema vai alem da simples falta: gera ociosidade, desperdicio de insumos e impacta diretamente a receita. A Praesens API atua como uma camada de inteligencia sobre o ERP da clinica, convertendo dados historicos e variaveis externas em probabilidade de comparecimento.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+### 🏗️ 2. ARQUITETURA E FLUXO
+O sistema foi desenhado para ser resiliente e escalavel:
 
-| Tecnologia | Finalidade |
-|---|---|
-| Java 17 | Linguagem principal |
-| Spring Boot | Framework web e injeção de dependências |
-| XGBoost | Motor de machine learning para predição |
-| Swagger / OpenAPI | Documentação e testes interativos da API |
-| Docker | Containerização da aplicação |
-| Render | Deploy em nuvem |
+| Etapa | Acao | Ferramenta |
+| :--- | :--- | :--- |
+| Ingestao | Recebimento de agendamento | Spring Boot REST |
+| Contexto | Busca de clima e trafego | OpenWeather / TomTom |
+| Predicao | Calculo de risco | XGBoost Model |
+| Resultado | Score de 0 a 1 | API Response |
 
-## 🚀 Endpoints
+---
 
-A documentação completa e interativa está disponível via Swagger UI após subir a aplicação:
+### ⚙️ 3. TECNOLOGIAS E FERRAMENTAS
+🚀 Core: Java 17, Spring Boot 3, Spring Cloud OpenFeign.
+🧠 Inteligencia: XGBoost (Engine de ML).
+☁️ Deploy: Docker, Render Cloud.
+📝 Documentacao: OpenAPI 3 / Swagger UI.
 
-```
-GET /swagger-ui.html
-```
+---
 
-### Endpoint principal
+### 🛠️ 4. GUIA DE RODAGEM (SEM DOCKER)
+1. Clone o projeto: git clone https://github.com/heitorjalfim/Praesens.git
+2. Configuracao: Defina OPENWEATHER_API_KEY e TOMTOM_API_KEY no seu ambiente.
+3. Execucao:
+   - Acesse a pasta raiz via terminal.
+   - Execute: ./mvnw spring-boot:run
+   - Acesse: http://localhost:8080/swagger-ui/index.html
 
-```
-POST /previsao
-```
+---
 
-## 🌐 Deploy
+### 🌐 5. DOCUMENTACAO E TESTES (SWAGGER)
+Acesse a documentacao interativa e teste os endpoints diretamente no navegador:
+https://praesens.onrender.com/swagger-ui/index.html#/
 
-A aplicação está disponível via **Render**, rodando em container Docker, sendo possível acessar o Swagger da aplicação.
+---
 
-**URL base:** `https://praesens.onrender.com/swagger-ui/index.html`
+### 📊 6. EXEMPLO DE REQUISICAO (INPUT)
+{
+  "tipoProcedimento": "CONSULTA_GERAL",
+  "horaAgendamento": 14,
+  "valorProcedimento": 250,
+  "totalAgendamentos": 12,
+  "totalFaltas": 1
+}
 
+---
 
-## 💻 Rodando Localmente (sem Docker)
-
-**Pré-requisitos:** Java 17+, Maven
-
-```bash
-# Clonar o repositório
-git clone https://github.com/seu-usuario/praesens-api.git
-cd praesens-api
-
-# Build e execução
-./mvnw spring-boot:run
-```
-
-A API estará disponível em `http://localhost:8080`.
-
-> ⚠️ Por estar em um plano gratuito do Render, a instância pode entrar em modo de hibernação após inatividade. A primeira requisição pode demorar alguns segundos para inicializar.
+### ⚠️ AVISO
+Este projeto esta em ambiente de teste no Render. A primeira requisicao pode levar alguns segundos devido a hibernacao do plano gratuito.
